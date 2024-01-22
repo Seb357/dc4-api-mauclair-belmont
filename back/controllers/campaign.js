@@ -17,6 +17,8 @@ exports.getAllCampaigns = (req, res, next) => {
   );
 };
 
+
+
 // exports.getOneCampaign = (req, res, next) => {
 //   Campaign.findById(req.params.id).then(
 //     (campaign) => {
