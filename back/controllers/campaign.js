@@ -1,4 +1,4 @@
-const uuid = require('uuid/v1');
+const uuid = require('uuid');
 const Campaign = require('../models/Campaign');
 
 exports.getAllCampaigns = (req, res, next) => {
@@ -8,6 +8,7 @@ exports.getAllCampaigns = (req, res, next) => {
         campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
         return campaign;
       });
+      console.log();
       res.status(200).json(mappedCampaigns);
     }
   ).catch(
@@ -17,78 +18,77 @@ exports.getAllCampaigns = (req, res, next) => {
   );
 };
 
+exports.getOneCampaign = (req, res, next) => {
+  Campaign.findById(req.params.id).then(
+    (campaign) => {
+      if (!campaign) {
+        return res.status(404).send(new Error('Campaign not found!'));
+      }
+      campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
+      res.status(200).json(campaign);
+    }
+  ).catch(
+    () => {
+      res.status(500).send(new Error('Database error!'));
+    }
+  )
+  console.log(req.params.id);
+};
 
-
-// exports.getOneCampaign = (req, res, next) => {
-//   Campaign.findById(req.params.id).then(
-//     (campaign) => {
-//       if (!campaign) {
-//         return res.status(404).send(new Error('Campaign not found!'));
-//       }
-//       campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
-//       res.status(200).json(campaign);
-//     }
-//   ).catch(
-//     () => {
-//       res.status(500).send(new Error('Database error!'));
-//     }
-//   )
-// };
-
-// /**
-//  *
-//  * Expects request to contain:
-//  * contact: {
-//  *   firstName: string,
-//  *   lastName: string,
-//  *   address: string,
-//  *   city: string,
-//  *   email: string
-//  * }
-//  * campaigns : [string] <-- array of campaign _id
-//  *
-//  */
-// exports.orderCampaigns = (req, res, next) => {
-//   if (!req.body.contact ||
-//       !req.body.contact.firstName ||
-//       !req.body.contact.lastName ||
-//       !req.body.contact.address ||
-//       !req.body.contact.city ||
-//       !req.body.contact.email ||
-//       !req.body.campaigns) {
-//     return res.status(400).send(new Error('Bad request!'));
-//   }
-//   let queries = [];
-//   for (let campaignId of req.body.campaigns) {
-//     const queryPromise = new Promise((resolve, reject) => {
-//       Campaign.findById(campaignId).then(
-//         (campaign) => {
-//           if (!campaign) {
-//             reject('campaign not found: ' + campaignId);
-//           }
-//           campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
-//           resolve(campaign);
-//         }
-//       ).catch(
-//         () => {
-//           reject('Database error!');
-//         }
-//       )
-//     });
-//     queries.push(queryPromise);
-//   }
-//   Promise.all(queries).then(
-//     (campaigns) => {
-//       const orderId = uuid();
-//       return res.status(201).json({
-//         contact: req.body.contact,
-//         campaigns: campaigns,
-//         orderId: orderId
-//       })
-//     }
-//   ).catch(
-//     (error) => {
-//       return res.status(500).json(new Error(error));
-//     }
-//   );
-// };
+/**
+ *
+ * Expects request to contain:
+ * contact: {
+ *   firstName: string,
+ *   lastName: string,
+ *   address: string,
+ *   city: string,
+ *   email: string
+ * }
+ * campaigns : [string] <-- array of campaign _id
+ *
+ */
+exports.orderCampaigns = (req, res, next) => {
+  if (!req.body.contact ||
+      !req.body.contact.firstName ||
+      !req.body.contact.lastName ||
+      !req.body.contact.address ||
+      !req.body.contact.city ||
+      !req.body.contact.email ||
+      !req.body.campaigns) {
+    return res.status(400).send(new Error('Bad request!'));
+  }
+  let queries = [];
+  for (let campaignId of req.body.campaigns) {
+    const queryPromise = new Promise((resolve, reject) => {
+      Campaign.findById(campaignId).then(
+        (campaign) => {
+          if (!campaign) {
+            reject('campaign not found: ' + campaignId);
+          }
+          campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
+          resolve(campaign);
+        }
+      ).catch(
+        () => {
+          reject('Database error!');
+        }
+      )
+    });
+    queries.push(queryPromise);
+  }
+  Promise.all(queries).then(
+    (campaigns) => {
+      const orderId = uuid();
+      return res.status(201).json({
+        contact: req.body.contact,
+        campaigns: campaigns,
+        orderId: orderId
+      })
+    }
+  ).catch(
+    (error) => {
+      return res.status(500).json(new Error(error));
+    }
+  );
+};
