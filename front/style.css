@@ -2,6 +2,41 @@
 /*GENERAL*/
 /*********/
 
+/* Style de base pour les boutons */
+.button {
+	background-color: #007bff; /* Bleu */
+	color: white; /* Texte blanc */
+	padding: 10px 20px; /* Espacement intérieur */
+	text-align: center; /* Texte centré */
+	text-decoration: none; /* Pas de soulignement */
+	display: inline-block; /* Permet le centrage */
+	font-size: 16px; /* Taille de la police */
+	margin: 10px 20px; /* Marge externe pour l'espacement */
+	transition: background-color 0.3s; /* Transition douce */
+	border: none; /* Pas de bordure */
+	border-radius: 5px; /* Bordures arrondies */
+	cursor: pointer; /* Curseur pointeur */
+  }
+  
+  /* Changement de style lors du survol */
+  .button:hover {
+	background-color: #0056b3; /* Bleu un peu plus foncé */
+  }
+  
+  /* Centrage des boutons */
+  body {
+	text-align: center; /* Centre le contenu du body */
+  }
+  
+  /* Assurez-vous que le conteneur des boutons est centré si ce n'est pas directement dans le body */
+  .container-boutons {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+  }
+  
+  /* Utilisez .container-boutons autour de vos <a> dans le HTML si nécessaire */
+
 body {
 	font-family: 'Montserrat', sans-serif;
 	margin: 0;
